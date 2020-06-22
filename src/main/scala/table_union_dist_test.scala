@@ -35,7 +35,8 @@ object table_union_dist_test {
     val lines = q.count()
     val t1 = System.nanoTime()
 
-    println("#### spark  spark union time ms " + (t1 - t0) / 1e6 + " lines " + lines)
+    println("#### spark union time ms " + ((t1 - t0) / 1e6).toInt + " lines " + lines + " para "
+      + parallelism)
     //    Thread.sleep(1000000000) // wait for 1000 millisecond
   }
 

@@ -8,7 +8,7 @@ object table_union_dist_test {
     val parallelism = args(0).toInt
     val inputDir = args(1) // "hdfs://localhost:9001/test"
 
-    println("#### dist_union workers: " + parallelism)
+    println("#### spark  dist_union workers: " + parallelism)
 
     val spark = SparkSession
       .builder()
@@ -19,12 +19,12 @@ object table_union_dist_test {
     val leftDf = spark.read.format("csv").option("header", value = true)
       .load(inputDir + "/csv1_*")
       .repartition(parallelism).cache()
-    println("#### left_df " + leftDf.count())
+    println("#### spark  left_df " + leftDf.count())
 
     val rightDf = spark.read.format("csv").option("header", value = true)
       .load(inputDir + "/csv2_*")
       .repartition(parallelism).cache()
-    println("#### right_df " + leftDf.count())
+    println("#### spark  right_df " + leftDf.count())
 
     spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
     spark.conf.get("spark.sql.join.preferSortMergeJoin")
@@ -35,7 +35,7 @@ object table_union_dist_test {
     val lines = q.count()
     val t1 = System.nanoTime()
 
-    println("#### time sm " + (t1 - t0) / 1e6 + " lines " + lines)
+    println("#### spark  spark union time ms " + (t1 - t0) / 1e6 + " lines " + lines)
     //    Thread.sleep(1000000000) // wait for 1000 millisecond
   }
 

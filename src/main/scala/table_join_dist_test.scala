@@ -1,32 +1,33 @@
 import org.apache.spark.sql.SparkSession
 
-object join {
+object table_join_dist_test {
 
+  // args: 4 hdfs://v-login1:9001/twx spark://localhost:7077
   def main(args: Array[String]): Unit = {
 
-    System.setProperty("hadoop.home.dir", "/home/niranda/software/hadoop-2.10.0")
+    val parallelism = args(0).toInt
+    val inputDir = args(1) // "hdfs://localhost:9001/test"
+
+    println("#### dist_join workers: " + parallelism)
 
     val spark = SparkSession
       .builder()
-      .appName("Example")
-      //      .config("spark.master", "local[4]")
-      .config("spark.master", args(0))
+      .appName("Spark join " + parallelism)
+      .config("spark.master", args(2))
       .getOrCreate()
 
-    val parallelism = args(1).toInt
-
     val leftDf = spark.read.format("csv").option("header", value = true)
-      .load("hdfs://localhost:9001/test/csv1_*")
+      .load(inputDir + "/csv1_*")
       .repartition(parallelism).cache()
     println("#### left_df " + leftDf.count())
 
     val rightDf = spark.read.format("csv").option("header", value = true)
-      .load("hdfs://localhost:9001/test/csv2_*")
+      .load(inputDir + "/csv2_*")
       .repartition(parallelism).cache()
     println("#### right_df " + leftDf.count())
 
     spark.conf.set("spark.sql.autoBroadcastJoinThreshold", -1)
-    println(spark.conf.get("spark.sql.join.preferSortMergeJoin"))
+    spark.conf.get("spark.sql.join.preferSortMergeJoin")
     //    csvDf.printSchema()
 
     val t0 = System.nanoTime()

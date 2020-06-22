@@ -14,6 +14,7 @@ object table_union_dist_test {
       .builder()
       .appName("Spark union " + parallelism)
       .config("spark.master", args(2))
+      .config("spark.executor.memory", "8g")
       .getOrCreate()
 
     val leftDf = spark.read.format("csv").option("header", value = true)

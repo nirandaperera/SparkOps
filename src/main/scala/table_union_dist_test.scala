@@ -32,7 +32,7 @@ object table_union_dist_test {
     //    csvDf.printSchema()
 
     val t0 = System.nanoTime()
-    val q = leftDf.union(rightDf)
+    val q = leftDf.union(rightDf).distinct()
     val lines = q.count()
     val t1 = System.nanoTime()
 

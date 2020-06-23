@@ -14,6 +14,9 @@ object table_join_dist_test {
       .builder()
       .appName("Spark join " + parallelism)
       .config("spark.master", args(2))
+      .config("spark.executor.memory", "10g")
+      .config("spark.executor.cores", 1)
+      .config("spark.memory.fraction", 0.75)
       .getOrCreate()
 
     val leftDf = spark.read.format("csv").option("header", value = true)
